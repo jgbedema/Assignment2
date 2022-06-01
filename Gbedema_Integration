@@ -1,0 +1,24 @@
+Joseph Gbedema
+APC Assignment 2
+05/31/2022
+
+	Integration and Configuration:
+o	Component Analysis
+	Look at other databases such as healthcare databases for patients and doctors, banking online app, etc.
+	Compare those database and grab something unique or pertaining to the project such as login page, how the info is displayed to the user
+	For UI, see how each page looks and how the user is prompted
+o	Requirement Modifications
+	Add more attributes to each user, such as grad year for student, room number for instructor… etc.
+	Allow user to have more options
+o	System Design
+	Allow user to have more options
+•	Set time constraints
+•	Set availability or time
+•	More functions 
+	Modify to view past semesters and the upcoming semester 
+	Add limit to how many classes student can register for
+	View number of people registered for a course, waitlist, and how many seats available
+o	Development and Integration
+	There are a lot of systems that are designed to schedule
+	Use old code to develop new code
+	Build upon the old code
