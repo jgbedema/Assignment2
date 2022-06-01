@@ -1,0 +1,35 @@
+Joseph Gbedema
+APC Assignment 2
+05/31/2022
+
+	Waterfall Model
+o	Requirements:
+	Each user must have a WIT ID
+	Each user must either be a student, instructor, or admin
+	Goal is for the database to work for 100+ users
+	Must contain course information
+	Must be able to view schedule and access the 
+	Must have a GUI
+o	System Design
+	An interactive interface to display the necessary functions the user needs
+	Students can view their schedules and register, etc…
+	Instructors can see available courses and so on…
+	Admin has access to see everything
+o	Implementation
+	Using OOP classes to create the user database
+	Code(s) written in C++, Python, and Java
+	Inherited classes
+	Tested the functions by calling them in Driver code
+	Tested the attributes by calling the first and last name, and ID
+o	Integration & Testing
+1.	Test the code by creating instances in the Driver file
+2.	Calling the functions to see which one works and which ones don’t
+3.	Transforming the code into a GUI with a user-friendly interface rather than viewing from the terminal
+4.	Adding a database or importing from a list of 100 students, 10 instructors, and one admin to find bugs
+5.	Reiterating through steps 1-5 to find more bus and debug
+o	Operation and Maintenance
+	Put code under stress test to see where the bugs are
+	Try to organize code using OOP approaches so that we can practice encapsulation since this is a database with sensitive information
+•	Try to make methods private and inaccessible
+	Update small and minor things such as variables, loops, conditional statements
+
