@@ -26,6 +26,10 @@ def login(): #setup account
     password = input("Enter a password: ")
     
     cursor.execute("""SELECT username from REGISTER WHERE USERNAME= ? AND PASSWORD = ? """, (username, password))
+    cursor.execute("""SELECT EMAIL from ADMIN WHERE EMAIL= ? """, [username])
+    cursor.execute("""SELECT EMAIL from INSTRUCTOR WHERE EMAIL= ? """, [username])
+    cursor.execute("""SELECT EMAIL from STUDENT WHERE EMAIL= ? """, [username])
+    
     if not cursor.fetchone():  # An empty result evaluates to False.
         print("Login failed")
     else:
