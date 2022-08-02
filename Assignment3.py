@@ -55,24 +55,24 @@ def remove():
 
 print("-----MENU----- \nS to search\nI to insert\nP to print all\nC to create table\nU to update\nR to remove\nE to exit\n")
 
-choice = ''
-while (choice != "E"):
-    choice = input("\nPlease select a choice: ")
+# choice = ''
+# while (choice != "E"):
+#     choice = input("\nPlease select a choice: ")
 
-    if choice == "S":
-        search()
+#     if choice == "S":
+#         search()
 
-    elif choice == "I":
-        insert()
+#     elif choice == "I":
+#         insert()
 
-    elif choice == "P":
-        print_all()
+#     elif choice == "P":
+#         print_all()
 
-    elif choice == "U":
-        update()
+#     elif choice == "U":
+#         update()
 
-    elif choice == "R":
-        remove()
+#     elif choice == "R":
+#         remove()
 
 
 # SQL command to create a table in the database 
@@ -81,12 +81,14 @@ sql_command = """CREATE TABLE IF NOT EXISTS COURSE (
 CRN INTEGER PRIMARY KEY NOT NULL,
 TITLE TEXT NOT NULL,
 DEPT TEXT NOT NULL,
+INSTRUCTOR TEXT NOT NULL,
 TIME TEXT NOT NULL,
 DAY TEXT NOT NULL,
 SEMESTER TEXT NOT NULL,
 YEAR TEXT NOT NULL,
 CREDITS INTEGER NOT NULL)
 ;"""
+# sql_command = """DROP TABLE COURSE ;"""
   
 # execute the statement 
 cursor.execute(sql_command) 
@@ -94,19 +96,19 @@ print ("Table created successfully")
 
 # SQL command to insert the data in the table, must be done one at a time 
     #---insert course one---
-sql_command = """INSERT OR IGNORE INTO COURSE VALUES(100, 'OOP', 'BSCO', '10AM - 11:50 AM', 'M W F', 'SUMMER', 2021, 4);"""
+sql_command = """INSERT OR IGNORE INTO COURSE VALUES(100, 'OOP', 'BSCO', 'Alan Turing', '10AM - 11:50 AM', 'M W F', 'SUMMER', 2021, 4);"""
 cursor.execute(sql_command) 
     #---insert course 2---
-sql_command = """INSERT OR IGNORE INTO COURSE VALUES(200, 'Analog Circuits', 'BSEE', '10AM - 11:50 AM', 'M W F', 'SUMMER', 2021, 4);"""
+sql_command = """INSERT OR IGNORE INTO COURSE VALUES(200, 'Analog Circuits', 'BSEE', 'Anthony Smart', '10AM - 11:50 AM', 'M W F', 'SUMMER', 2021, 4);"""
 cursor.execute(sql_command) 
     #---insert course 3---
-sql_command = """INSERT OR IGNORE INTO COURSE VALUES(300, 'Modern History', 'HUSS', '3:30PM - 4:50 PM', 'T R', 'SUMMER', 2021, 3);"""
+sql_command = """INSERT OR IGNORE INTO COURSE VALUES(300, 'Modern History', 'HUSS', 'Jackson Cartes', '3:30PM - 4:50 PM', 'T R', 'SUMMER', 2021, 3);"""
 cursor.execute(sql_command) 
     #---insert course 4---
-sql_command = """INSERT OR IGNORE INTO COURSE VALUES(400, 'Network Theory 2', 'BSEE', '8AM - 10:50 AM', 'M W F', 'SUMMER', 2021, 4);"""
+sql_command = """INSERT OR IGNORE INTO COURSE VALUES(400, 'Network Theory 2', 'BSEE', 'Anthony Smart', '8AM - 10:50 AM', 'M W F', 'SUMMER', 2021, 4);"""
 cursor.execute(sql_command) 
     #---insert course 5---
-sql_command = """INSERT OR IGNORE INTO COURSE VALUES(500, 'Calculus', 'MATH', '9AM - 10:20 AM', 'M W', 'SUMMER', 2021, 4);"""
+sql_command = """INSERT OR IGNORE INTO COURSE VALUES(500, 'Calculus', 'MATH', 'Henry Bess', '9AM - 10:20 AM', 'M W', 'SUMMER', 2021, 4);"""
 cursor.execute(sql_command) 
 
 # QUERY FOR ALL

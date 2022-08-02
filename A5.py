@@ -6,62 +6,103 @@ print ("Opened database successfully")
 # cursor objects are used to traverse, search, grab, etc. information from the database, similar to indices or pointers  
 cursor = database.cursor() 
 
-#Login (by JG)
-#---Registration---#
-def register(): #setup account
-    id = input("Enter ID: ")
-    # a = type(id)
-    # print(a)
-    name = input("First name: ")
-    last_name = input("Last name: ")
-    email = input("Enter email: ")
-    username = input("Enter a username: ")
-    password = input("Enter a password: ")
-    cursor.execute("INSERT INTO REGISTER values(?, ?, ?, ?, ?, ?)",(id, name, last_name, email, username, password))    
-#register()
-
-#---Login--#
-def login(): #setup account
-    username = input("Enter a username: ")
-    password = input("Enter a password: ")
-    
-    cursor.execute("""SELECT username from REGISTER WHERE USERNAME= ? AND PASSWORD = ? """, (username, password))
-    cursor.execute("""SELECT EMAIL from ADMIN WHERE EMAIL= ? """, [username])
-    cursor.execute("""SELECT EMAIL from INSTRUCTOR WHERE EMAIL= ? """, [username])
-    cursor.execute("""SELECT EMAIL from STUDENT WHERE EMAIL= ? """, [username])
-    
-    if not cursor.fetchone():  # An empty result evaluates to False.
-        print("Login failed")
-    else:
-        print("Welcome")
-
-        user_type = int(input("Select (1 = Student\t 2 = Instructor\t 3 = Admin): "))
-        if(user_type == 1):
-            print("Student")
-        elif(user_type == 2):
-            print("Instructor")
-        elif(user_type == 3):
-            print("Admin")
-
-login_type = int(input("Select (1 = Register\t 2 = Login): "))
-if(login_type == 1):
-    register()
-elif(login_type == 2):
-    login()
- 
-# SQL command to create LOGIN table in the database 
-sql_command = """CREATE TABLE IF NOT EXISTS REGISTER (  
-ID TEXT PRIMARY KEY NOT NULL,
-NAME TEXT NOT NULL,
-SURNAME TEXT NOT NULL,
-EMAIL TEXT NOT NULL,
-USERNAME TEXT NOT NULL,
-PASSWORD TEXT NOT NULL)
-;"""
-
-# execute the statement 
+  #--- Insert STUDENTS--#
+sql_command = """INSERT OR IGNORE INTO STUDENT VALUES(10011, 'Joseph', 'Gbedema', 2022, 'BSCO', 'gbedemaj');"""
 cursor.execute(sql_command) 
-print ("Table created successfully") 
+
+sql_command = """INSERT OR IGNORE INTO STUDENT VALUES(10012, 'Abdul', 'Ibrahim', 2022, 'BSCO', 'ibrahimi');"""
+cursor.execute(sql_command) 
+
+sql_command = """INSERT OR IGNORE INTO STUDENT VALUES(10013, 'Abdeil', 'Danastor', 2022, 'BSCO', 'danastora');"""
+cursor.execute(sql_command) 
+
+sql_command = """INSERT OR IGNORE INTO STUDENT VALUES(10014, 'Jonathan', 'Kerr', 2005, 'BSARCH', 'kerrj');"""
+cursor.execute(sql_command) 
+
+sql_command = """INSERT OR IGNORE INTO STUDENT VALUES(10015, 'Ahmed', 'Demin', 1903, 'BMED', 'demina');"""
+cursor.execute(sql_command) 
+
+sql_command = """INSERT OR IGNORE INTO STUDENT VALUES(10016, 'Jack', 'Frost', 1900, 'BSARCH', 'frostj');"""
+cursor.execute(sql_command) 
+
+sql_command = """INSERT OR IGNORE INTO STUDENT VALUES(10017, 'Sarah', 'Pearl', 1956, 'BSCO', 'sarahp');"""
+cursor.execute(sql_command) 
+
+sql_command = """INSERT OR IGNORE INTO STUDENT VALUES(10018, 'Mary', 'Magdon', 1987, 'BSARCH', 'magdonm');"""
+cursor.execute(sql_command) 
+
+sql_command = """INSERT OR IGNORE INTO STUDENT VALUES(10019, 'Elizabeth', 'Earl', 2050, 'BSCO', 'earle');"""
+cursor.execute(sql_command) 
+
+sql_command = """INSERT OR IGNORE INTO STUDENT VALUES(10020, 'James', 'Cranford', 1967, 'BMED', 'cranfordj');"""
+cursor.execute(sql_command) 
+
+
+  #--- Insert INSTRUCTORS--#
+sql_command = """INSERT OR IGNORE INTO INSTRUCTOR VALUES(20006, 'Ryan', 'Beto', 'Full Prof.', '2005', 'BSARCH', 'betor');"""
+cursor.execute(sql_command) 
+
+sql_command = """INSERT OR IGNORE INTO INSTRUCTOR VALUES(20007, 'Anthony', 'Smart', 'Assistant  Prof.', '2006', 'BSEE', 'smarta');"""
+cursor.execute(sql_command) 
+
+sql_command = """INSERT OR IGNORE INTO INSTRUCTOR VALUES(20008, 'Jordan', 'David', 'Full Prof.', '2007', 'HUSS', 'davidj');"""
+cursor.execute(sql_command) 
+
+sql_command = """INSERT OR IGNORE INTO INSTRUCTOR VALUES(20009, 'Jackson', 'Cartes', 'Assistant  Prof.', '2008', 'HUSS', 'cartesj');"""
+cursor.execute(sql_command) 
+
+sql_command = """INSERT OR IGNORE INTO INSTRUCTOR VALUES(20010, 'Benjamin', 'Najj', 'Full Prof.', '2009', 'BSCO', 'najjb');"""
+cursor.execute(sql_command) 
+
+sql_command = """INSERT OR IGNORE INTO INSTRUCTOR VALUES(20011, 'Katherine', 'Kelsey', 'Assistant  Prof.', '2010', 'BMED', 'kelseyk');"""
+cursor.execute(sql_command) 
+
+sql_command = """INSERT OR IGNORE INTO INSTRUCTOR VALUES(20012, 'Lily', 'Apple', 'Full Prof.', '2011', 'BMED', 'applel');"""
+cursor.execute(sql_command) 
+
+sql_command = """INSERT OR IGNORE INTO INSTRUCTOR VALUES(20013, 'Henry', 'Bess', 'Assistant  Prof.', '2012', 'BCOS', 'bessh');"""
+cursor.execute(sql_command) 
+
+sql_command = """INSERT OR IGNORE INTO INSTRUCTOR VALUES(20014, 'Skyler', 'Fast', 'Full Prof.', '2013', 'BSCO', 'fasts');"""
+cursor.execute(sql_command) 
+
+
+sql_command = """INSERT OR IGNORE INTO INSTRUCTOR VALUES(20015, 'Paige', 'Test', 'Assistant  Prof.', '2014', 'BSARCH', 'testp');"""
+cursor.execute(sql_command) 
+
+  #--- Insert COURSES--#
+sql_command = """INSERT OR IGNORE INTO COURSE VALUES(600, 'Calculus II', 'MATH', '2PM - 3:20 PM', 'TR', 'FALL', 2022, 4);"""
+cursor.execute(sql_command) 
+
+sql_command = """INSERT OR IGNORE INTO COURSE VALUES(700, 'APC', 'MATH', '2PM - 3:20 PM', 'TR', 'FALL', 2022, 4);"""
+cursor.execute(sql_command) 
+
+sql_command = """INSERT OR IGNORE INTO COURSE VALUES(800, 'Matlab', 'MATH', '2PM - 3:20 PM', 'TR', 'FALL', 2022, 4);"""
+cursor.execute(sql_command) 
+
+sql_command = """INSERT OR IGNORE INTO COURSE VALUES(900, 'Calculus II', 'MATH', '2PM - 3:20 PM', 'TR', 'FALL', 2022, 4);"""
+cursor.execute(sql_command) 
+
+sql_command = """INSERT OR IGNORE INTO COURSE VALUES(1000, 'Calculus II', 'MATH', '2PM - 3:20 PM', 'TR', 'FALL', 2022, 4);"""
+cursor.execute(sql_command) 
+
+sql_command = """INSERT OR IGNORE INTO COURSE VALUES(1100, 'Calculus II', 'MATH', '2PM - 3:20 PM', 'TR', 'FALL', 2022, 4);"""
+cursor.execute(sql_command) 
+
+sql_command = """INSERT OR IGNORE INTO COURSE VALUES(1200, 'Calculus II', 'MATH', '2PM - 3:20 PM', 'TR', 'FALL', 2022, 4);"""
+cursor.execute(sql_command) 
+
+sql_command = """INSERT OR IGNORE INTO COURSE VALUES(1300, 'Calculus II', 'MATH', '2PM - 3:20 PM', 'TR', 'FALL', 2022, 4);"""
+cursor.execute(sql_command) 
+
+sql_command = """INSERT OR IGNORE INTO COURSE VALUES(1400, 'Calculus II', 'MATH', '2PM - 3:20 PM', 'TR', 'FALL', 2022, 4);"""
+cursor.execute(sql_command) 
+
+sql_command = """INSERT OR IGNORE INTO COURSE VALUES(1500, 'Calculus II', 'MATH', '2PM - 3:20 PM', 'TR', 'FALL', 2022, 4);"""
+cursor.execute(sql_command) 
+
+sql_command = """DELETE FROM STUDENT WHERE ID = 47;"""
+cursor.execute(sql_command) 
 
 
 # print("-----MENU----- \nS to search\nI to insert\nP to print all\nC to create table\nU to update\nR to remove\nE to exit\n")
