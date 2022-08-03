@@ -177,5 +177,5 @@ cursor.execute(sql_command)
 # If we skip this, nothing will be saved in the database. 
 database.commit() 
   
-# close the connection 
-database.close() 
+# # close the connection 
+# database.close() 

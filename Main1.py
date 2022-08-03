@@ -1,7 +1,5 @@
 from Classes import *
 
-
-
 # database file connection 
 database = sqlite3.connect("Database.db") #connect to the databse provided by Prof
 print ("Opened database successfully")
@@ -10,14 +8,11 @@ print ("Opened database successfully")
 cursor = database.cursor() 
 
 default_pw = "default"
-bogus_uname = ' '
+bogus_uname = ' ' #make an empty string to run while loop
 
-
-#functions
-
+                                    #functions
 #student
 def student_login():
-    user_type = 1
     #grab username and pass
     while bogus_uname:
         username = input("\nPlease enter a username: ")
@@ -40,7 +35,7 @@ def student_login():
                     break
                 
             break
-        
+ 
     
         #student details
     for i in student_result:
@@ -61,28 +56,31 @@ def student_login():
     # # stu.drop_course()
     # # stu.print_sched()
 
-
+    # stu.List_course()
 
     choice = ''
-    while (choice != "E"):    
+    while (choice != "L"):    
         #  ----MENU----
-        print("\n----------------------MENU--------------------------------- \nA to Add Courses to Schedule\nR to Remove Courses from Schedule\nP to Print Schedule\nE to exit\n")
+        print("\n----------------------MENU--------------------------------- \nA to Add Courses to Schedule\nB to Remove Courses from Schedule\nC to Print Schedule\nD to View Courses\nL to Logout\n")
         choice = input("\nPlease select a choice: ")
 
         if choice == "A":
             stu.add_course()
 
-        elif choice == "R":
+        elif choice == "B":
             stu.drop_course()
 
-        elif choice == "P":
+        elif choice == "C":
             stu.print_sched()
+
+        elif choice == "D":
+            stu.List_course()
+
         elif choice.isnumeric():  
             print("Error: Enter a letter from the MENU")
 
 #instructor
 def instructor_login():
-    user_type = 2
         #grab username and pass
     while bogus_uname:
             #grab username
@@ -127,32 +125,35 @@ def instructor_login():
     # stu.drop_course()
     # stu.print_sched()
 
+    # instr.List_course() #print courses
 
     choice = ''
-    while (choice != "E"):    
+    while (choice != "L"):    
             #  ----MENU----
-        print("\n----------------------MENU--------------------------------- \nS to View Schedule\nC to Search Course Roster\nE to exit\n")
+        print("\n----------------------MENU--------------------------------- \nA to View Schedule\nB to Search Course Roster\nC to List All Courses\nL to Logout\n")
         
         choice = input("\nPlease select a choice: ")
 
-        if choice == "S":
+        if choice == "A":
             instr.print_sched()
-        elif choice == "C":
+
+        elif choice == "B":
             instr.print_classlist()
-        elif int(choice):  
-            print("Error: Enter a letter from the MENU")
+            
+        elif choice == "C":
+            instr.List_course() #print courses
+
         elif choice.isnumeric():  
             print("Error: Enter a letter from the MENU")
 
 #admin
 def admin_login():
-    user_type = 3
     #grab username and pass
     while bogus_uname:
         username = input("\nPlease enter a username: ")
 
             #store user information to check in db if user exists
-        cursor.execute("""SELECT * FROM STUDENT WHERE EMAIL = ? """, [username])
+        cursor.execute("""SELECT * FROM ADMIN WHERE EMAIL = ? """, [username])
         adm_result = cursor.fetchall()
         if (len(adm_result) == 0) or (username == bogus_uname):
             print('Username does not exist')
@@ -187,50 +188,56 @@ def admin_login():
     # adm.remove_course()
 
     
-
+    # adm.List_course()
 
     choice = ''
-    while (choice != "E"):    
+    while (choice != "L"):    
             #  ----MENU----
-        print("----------------------MENU--------------------------------- \nA to Add Course to the System\nR to Remove Course From System\nI to Add an Instructor\nS to Add a Student\nU to Remove a User\nE to exit\n")
+        print("----------------------MENU--------------------------------- \nA to Add Course to the System\nR to Remove Course From System\nI to Add an Instructor\nS to Add a Student\nU to Remove a User\nL to List All Courses\nL to Logout\n")
         
         choice = input("\nPlease select a choice: ")
 
         if choice == "A":
             adm.add_course()
 
-        elif choice == "R":
+        elif choice == "B":
             adm.remove_course()
        
-        elif choice == "I":
+        elif choice == "C":
             adm.add_instructor()
 
-        elif choice == "S":
+        elif choice == "D":
             adm.add_student()   
         
-        elif choice == "U":
+        elif choice == "E":
             adm.remove_user()   
-        elif int(choice):  
-            print("Error: Enter a letter from the MENU")
+
+        elif choice == "F":
+            adm.List_course() 
+
         elif choice.isnumeric():  
             print("Error: Enter a letter from the MENU")
 
 
-# print("Welcome!")
-# user_type = input("\nEnter 1 for STUDENT LOGIN\nEnter 2 for INSTRUCTOR LOGIN\nEnter 3 for ADMIN LOGIN\nEnter 4 to Log Out\n")
 
+#login/logout
+while bogus_uname:
+    user_type = input("\nEnter 1 for STUDENT LOGIN\nEnter 2 for INSTRUCTOR LOGIN\nEnter 3 for ADMIN LOGIN\nEnter 4 to Exit\n")
+    if user_type == "1":
+        print("\nWelcome Student!")
+        student_login()
+    elif user_type == "2":
+        print("\nWelcome Instructor!")
+        instructor_login()
+    elif user_type == "3":
+        print("\nWelcome Administrator!")
+        admin_login()
+    elif user_type == "4":
+        break
+    else:
+        print("Error: Wrong Entry")
 
-# if (user_type == 1):
-#     student_login()
-# elif(user_type == 2):
-#     instructor_login(user_type)
-# elif (user_type == 3):
-#     admin_login(user_type)
-# elif (user_type == 4):
-#     pass
-
-
-student_login()
+# student_login()
 # instructor_login()
 # admin_login()
 
@@ -247,13 +254,6 @@ student_login()
 #     # student_login()
 #     # instructor_login()
 #     # admin_login()
-
-
-
-
-
-
-
 
 # user = USER(name, surname, id)
 # admin = ADMIN()

@@ -10,6 +10,7 @@ cursor = database.cursor()
 
 #create a global list for registered classes
 bogus = ' '
+rep_courses = [] #create an empty list to check repeated courses
 
 #Base class
 class USER:
@@ -77,7 +78,7 @@ user = USER("Joseph", "Gbedema", "1")
 class STUDENT(USER):
     def __init__(self, first, last, ID):
         super(STUDENT, self).__init__(first, last, ID) #inherit USER's attributes
-        
+
     #functions
     def add_course(self): 
         print("\nADDING A COURSE")
@@ -86,32 +87,43 @@ class STUDENT(USER):
         course_results = cursor.fetchall()
         while bogus:
             if (len(course_results) == 0) or (crn == bogus):
-                print('Course does not exist')
+                print("Error: Course " + crn + " does not exist")
                 # crn = input("\nEnter Course CRN: ")
             
             else:
                 print("\nCourse Information")
                 for i in course_results:
                     print(i)
-                    reg_class.append(i)
-                    # reg_class_id.append(ID)
+                    # reg_class.append(i) 
+                    if i not in rep_courses:
+                        reg_class.append(i)
+                        rep_courses.append(i)
+                    else:
+                        print("You have already registered for this course" )
                 print("\nRegistered Courses: ")
                 print("CRN \t TITLE")
                 for j in reg_class:
                     print(str(j[0]) + "\t " + str(j[1]))
                 break
+            break
 
-
+    
     def drop_course(self):
         print("\nREMOVING A COURSE")
         crn = input("\nEnter Course CRN: ")
         cursor.execute("""SELECT * FROM COURSE WHERE CRN = ?;""", [crn] )
-        course_results = list(cursor.fetchall())
-        for i in course_results:
-            print("Course " + str(i) + " has been removed")
-            reg_class.remove(i)
-            # reg_class_id.remove(ID)
-            print()
+        drop_results = cursor.fetchall()
+        for i in drop_results:
+            if (len(reg_class) == 0) or (crn == bogus):
+                print("No Such Course Registered")
+                
+            else:
+                print(drop_results)
+                print("Course " + str(i) + " has been removed")
+                reg_class.remove(i)
+                # reg_class_id.remove(ID)
+                print()
+     
 
     def print_sched(self):
         print("\nSCHEDULE")
@@ -121,7 +133,7 @@ class STUDENT(USER):
         for j in reg_class:
             print(j)
 
-# student = STUDENT("Joe", "Gbe", "2")
+student = STUDENT("Joe", "Gbe", "2")
 # print("Student first name is: ", student.first)
 # student.print_sched()
 # student.add_course()
@@ -165,7 +177,7 @@ class INSTRUCTOR(USER):
 
 
 
-instr = INSTRUCTOR("Henry", "Bess", "3")
+# instr = INSTRUCTOR("Henry", "Bess", "3")
 # print("Instrutor first name is: ", instr.first)
 # instr.print_sched()
 
@@ -187,7 +199,7 @@ class ADMIN(USER):
         year = input("Enter Course Year: ")
         credits = input("Enter Course Credits: ")
 
-        cursor.execute("""INSERT OR IGNORE INTO COURSE VALUES('%s', '%s','%s', '%s, '%s', '%s', '%s', '%s', '%s');""" % (int(crn), title, dept, instr, time, day, semester, year, int(credits)))
+        cursor.execute("""INSERT OR IGNORE INTO COURSE VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?);""", (int(crn), title, dept, instr, time, day, semester, year, int(credits)))
 
         print("Course " + crn + " " + title + " has been created")
 
@@ -255,8 +267,9 @@ class ADMIN(USER):
 
 admin = ADMIN("Joseph", "G", "2")
 #print("Admin first name is: ", admin.first)
-#admin.remove_course()
+# admin.remove_course()
 
 
 # If we skip this, nothing will be saved in the database. 
 database.commit() 
+# database.close()
