@@ -98,6 +98,7 @@ class STUDENT(USER):
                     if i not in rep_courses:
                         reg_class.append(i)
                         rep_courses.append(i)
+                        reg_class.sort()
                     else:
                         print("You have already registered for this course" )
                 print("\nRegistered Courses: ")
@@ -118,12 +119,15 @@ class STUDENT(USER):
                 print("No Such Course Registered")
                 
             else:
-                print(drop_results)
-                print("Course " + str(i) + " has been removed")
-                reg_class.remove(i)
-                # reg_class_id.remove(ID)
-                print()
-     
+                # print(drop_results)
+                if i in reg_class:
+                    print("Course " + str(i[1]) + " has been removed")
+                    reg_class.remove(i)
+                    # reg_class_id.remove(ID)
+                    print()
+                else:
+                    print("No Such Course Registered")
+        
 
     def print_sched(self):
         print("\nSCHEDULE")
@@ -155,6 +159,19 @@ class INSTRUCTOR(USER):
     #functions
     def print_sched(self): 
 
+        prof_name = self.first
+        prof_last = self.last
+            
+        cursor.execute("""SELECT * FROM COURSE WHERE INSTRUCTOR = ?;""", [(prof_name + ' ' + prof_last)] )
+        print_results = cursor.fetchall()
+
+        print("Instructor Course Schedule")
+        for i in print_results:
+            print(i)
+
+
+    def print_classlist(self):
+        print("Instructor Print Class List")
         for i in reg_class:
             print("\nCourse Information")
             print(i[3])
@@ -170,10 +187,6 @@ class INSTRUCTOR(USER):
             print("Instructor Course Schedule")
             for i in print_results:
                 print(i)
-
-
-    def print_classlist(self):
-        print("Instructor Print Class List")
 
 
 
@@ -259,6 +272,7 @@ class ADMIN(USER):
         for i in admin_remove_user or instr_remove_user or stud_remove_user:
             print("User Information")
             print("ID: " + str(i[0]))
+            print("Name: " + str(i[1] + " " + str(i[2])))
             cursor.execute("""DELETE FROM ADMIN WHERE ID = ?;""", [id] )
             cursor.execute("""DELETE FROM INSTRUCTOR WHERE ID = ?;""", [id] )
             cursor.execute("""DELETE FROM STUDENT WHERE ID = ?;""", [id] )

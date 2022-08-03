@@ -193,7 +193,7 @@ def admin_login():
     choice = ''
     while (choice != "L"):    
             #  ----MENU----
-        print("----------------------MENU--------------------------------- \nA to Add Course to the System\nR to Remove Course From System\nI to Add an Instructor\nS to Add a Student\nU to Remove a User\nL to List All Courses\nL to Logout\n")
+        print("----------------------MENU--------------------------------- \nA to Add Course to the System\nB to Remove Course From System\nC to Add an Instructor\nD to Add a Student\nE to Remove a User\nF to List All Courses\nL to Logout\n")
         
         choice = input("\nPlease select a choice: ")
 
