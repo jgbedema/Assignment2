@@ -121,7 +121,7 @@ class STUDENT(USER):
         for j in reg_class:
             print(j)
 
-# student = STUDENT("Joe", "Gbe", "2")
+student = STUDENT("Joe", "Gbe", "2")
 # print("Student first name is: ", student.first)
 # student.print_sched()
 # student.add_course()
@@ -187,7 +187,7 @@ class ADMIN(USER):
         year = input("Enter Course Year: ")
         credits = input("Enter Course Credits: ")
 
-        cursor.execute("""INSERT OR IGNORE INTO COURSE VALUES('%s', '%s','%s', '%s, '%s', '%s', '%s', '%s', '%s');""" % (int(crn), title, dept, instr, time, day, semester, year, int(credits)))
+        cursor.execute("""INSERT OR IGNORE INTO COURSE VALUES('%s', '%s','%s', '%s, '%s', '%s', '%s', '%s', '%s');""" % (int(crn), title, dept, instr, str(time), day, semester, year, int(credits)))
 
         print("Course " + crn + " " + title + " has been created")
 
@@ -252,6 +252,17 @@ class ADMIN(USER):
             cursor.execute("""DELETE FROM STUDENT WHERE ID = ?;""", [id] )
 
             print("Name " + i[1] + " " + i[2] + " has been deleted")
+
+    def showCourses(self):
+        print("Here are the list of courses that Admin can see: ")
+        print("\nCourses")
+        cursor.execute("""SELECT * FROM COURSE """)
+        course_info = cursor.fetchall()
+
+        for i in course_info:
+            print(i)
+
+       # print("\n")
 
 admin = ADMIN("Joseph", "G", "2")
 #print("Admin first name is: ", admin.first)

@@ -152,7 +152,7 @@ def admin_login():
         username = input("\nPlease enter a username: ")
 
             #store user information to check in db if user exists
-        cursor.execute("""SELECT * FROM STUDENT WHERE EMAIL = ? """, [username])
+        cursor.execute("""SELECT * FROM  ADMIN WHERE EMAIL = ? """, [username])
         adm_result = cursor.fetchall()
         if (len(adm_result) == 0) or (username == bogus_uname):
             print('Username does not exist')
@@ -192,7 +192,7 @@ def admin_login():
     choice = ''
     while (choice != "E"):    
             #  ----MENU----
-        print("----------------------MENU--------------------------------- \nA to Add Course to the System\nR to Remove Course From System\nI to Add an Instructor\nS to Add a Student\nU to Remove a User\nE to exit\n")
+        print("----------------------MENU--------------------------------- \nA to Add Course to the System\nR to Remove Course From System\nI to Add an Instructor\nS to Add a Student\nU to Remove a User\nP to list out Courses in the System\nE to exit\n")
         
         choice = input("\nPlease select a choice: ")
 
@@ -209,9 +209,11 @@ def admin_login():
             adm.add_student()   
         
         elif choice == "U":
-            adm.remove_user()   
-        elif int(choice):  
-            print("Error: Enter a letter from the MENU")
+            adm.remove_user() 
+
+        elif choice == "P":
+            adm.showCourses() 
+        
         elif choice.isnumeric():  
             print("Error: Enter a letter from the MENU")
 
@@ -230,9 +232,9 @@ def admin_login():
 #     pass
 
 
-student_login()
+# student_login()
 # instructor_login()
-# admin_login()
+admin_login()
 
 
 
