@@ -10,7 +10,6 @@ cursor = database.cursor()
 
 #create a global list for registered classes
 bogus = ' '
-rep_courses = [] #create an empty list to check repeated courses
 
 #Base class
 class USER:
@@ -19,59 +18,58 @@ class USER:
         self.first = first
         self.last = last
         self.ID = ID
-        self.reg_class = [] #list to hold registered courses
+        # self.reg_class = [] #list to hold registered courses
+        # self.rep_courses = [] #create an empty list to check repeated courses
+        # self.reg_id = [] #create an empty list to chold student id for registered course
+
         
     
-    global reg_class, reg_class_id
+    global reg_class, rep_courses, reg_stu_id, reg_prof_name
     reg_class = [] #list to hold registered courses
-    reg_class_id = [] #list to hold student's id's for registered courses
+    # rep_courses = [] #create an empty list to check repeated courses
+    reg_stu_id = [] #list to hold student's id's for registered courses
+    reg_prof_name = [] #list to hold prof names for registered courses
 
     def Search_course_by_input(self):
         print("\n|Search For Course By CRN Or Title|")
         print("-----------------------------------")
-
-
         
-        cursor.execute("""SELECT CRN FROM COURSE""") #query for crn
-        crn_result = cursor.fetchall()
-        # print(str(result[5])) #check what is inside the result
-        cursor.execute("""SELECT TITLE FROM COURSE""") #query for crn
-        title_result = cursor.fetchall()
-        
-        choice = input("\nSelect 1 for CRN or 2 for Title: \n")
-        if choice == "1":
-            crn = input("Enter Course CRN: ")
-            if crn.isalpha():
-                print("Incorrect CRN")
-            else:
-                print("\nSearching CRN: " + crn)
-                cursor.execute("""SELECT * FROM COURSE WHERE CRN = ?;""", [crn] )
-                query_result = cursor.fetchall()
+        while bogus:
+            choice = input("\nSelect 1 for CRN or 2 for Title: \n")
+            if choice == "1":
+                crn = input("Enter Course CRN: ")
+                if crn.isalpha():
+                    print("Incorrect CRN")
+                else:
+                    print("\nSearching CRN: " + crn)
+                    cursor.execute("""SELECT * FROM COURSE WHERE CRN = ?;""", [crn] )
+                    query_result = cursor.fetchall()
+                
+                    for i in query_result:
+                        if i in query_result:
+                            print("Course Details: \n" + str(i) + "\n")
+                        else:
+                            print("No Such Course")
+                break
             
-                for crn in query_result:
-                    if crn in query_result:
-                        print("Course Details: \n" + str(crn) + "\n")
-                    else:
-                        print("No Such Course")
-            
-        elif choice == "2":
-            title = input("\nEnter Course Title: \n")
-            if title.isnumeric():
-                print("Incorrect CRN")
-            elif title not in title_result:
-                print("Incorrect CRN")
-            else:
-                print("\nSearching Title: " + title)
-                cursor.execute("""SELECT * FROM COURSE WHERE TITLE = ?;""", [title] )
-                query_result = cursor.fetchall()
+            elif choice == "2":
+                title = input("\nEnter Course Title: \n")
+                if title.isnumeric():
+                    print("Incorrect Title")
+                else:
+                    print("\nSearching Title: " + title)
+                    cursor.execute("""SELECT * FROM COURSE WHERE TITLE = ?;""", [title] )
+                    query_result = cursor.fetchall()
 
-                for title in query_result:
-                    if title in query_result:
-                        print("Course Details: \n" + str(title) + "\n")
-                    else:
-                        print("No Such Course")
-        elif not "1" or "2" or choice.isnumeric():
-            print("Error: Enter 1 for CRN or 2 for Title")
+                    for title in query_result:
+                        if title in query_result:
+                            print("Course Details: \n" + str(title) + "\n")
+                        else:
+                            print("No Such Course")
+                break
+            elif not "1" or "2" or choice.isnumeric():
+                print("Error: Enter 1 for CRN or 2 for Title")
+            
     
     def List_course(self):
         print("\n|COURSES|")
@@ -88,7 +86,7 @@ class USER:
 
 
 
-user = USER("Joseph", "Gbedema", "1")
+user = USER("Joseph", "Gbedema", "10011")
 #print("User first name is: ", user.first)
 # user.Search_course_by_input()
 # user.List_course()
@@ -118,10 +116,12 @@ class STUDENT(USER):
                 for i in course_results:
                     print(str(i))
                     # reg_class.append(i) 
-                    if i not in rep_courses:
-                        reg_class.append(i)
-                        rep_courses.append(i)
-                        reg_class.sort()
+                    if i not in reg_class:
+                        reg_class.append(i) #save class info in list
+                        reg_class.sort() #sort the list for display later
+                        reg_stu_id.append(self.ID) #grab the user ID
+                        reg_prof_name.append(i[3])
+                        reg_prof_name.sort()
                     else:
                         print("You have already registered for this course" )
                 print("\nRegistered Courses: ")
@@ -145,13 +145,19 @@ class STUDENT(USER):
             else:
                 # print(drop_results)
                 if i in reg_class:
+                    print("Course class ID" + str(reg_stu_id))
+                    print("Course reg info" + str(reg_class))
+                    print("Course reg prof info" + str(reg_prof_name))
                     print("Course " + str(i[1]) + " has been removed")
                     reg_class.remove(i)
-                    # reg_class_id.remove(ID)
+                    reg_prof_name.remove(i[3]) #remove the prof name
+                    reg_stu_id.remove(self.ID)#remove the student's id
                     print()
                 else:
                     print("No Such Course Registered\n")
         
+    # print(reg_class)
+    # print(rep_courses)
 
     def print_sched(self):
         print("\n|REGISTERED COURSES|")
@@ -160,7 +166,7 @@ class STUDENT(USER):
         for j in reg_class:
             print(j)
 
-student = STUDENT("Joe", "Gbe", "2")
+# student = STUDENT("Joe", "Gbe", "10011")
 # print("Student first name is: ", student.first)
 # student.print_sched()
 # student.add_course()
@@ -168,9 +174,14 @@ student = STUDENT("Joe", "Gbe", "2")
 # student.drop_course()
 # student.print_sched()
 
-#test to see what is in the registered course array
-for j in reg_class:
-    print("Stuff inside the registered list: " + str(j))
+# #test to see what is in the registered course array
+# for j in reg_class:
+#     print("Stuff inside the registered course list: " + str(j))
+# for j in rep_courses:
+#     print("Stuff inside the repeated course list: " + str(j))
+# for j in class_id:
+#     print("IDs inside the registered list: " + str(j))
+
 
 
 
@@ -181,7 +192,7 @@ class INSTRUCTOR(USER):
 
     #functions
     def print_sched(self): 
-        print("|COURSE TEACHING SCHEDULE|")
+        print("\n|COURSE TEACHING SCHEDULE|")
         print("--------------------------")
         prof_name = self.first
         prof_last = self.last
@@ -195,26 +206,102 @@ class INSTRUCTOR(USER):
 
 
     def print_classlist(self):
-        print("|COURSE ROSTER|")
+        print("\n|COURSE ROSTER|")
         print("---------------")
-        for i in reg_class:
-            crn = i[0]
-            prof_name = i[3]
-            prof_name_split = prof_name.split(' ', 2)
-            first_name = prof_name_split[0]
-            second_name = prof_name_split[1]
+        
+        full_name = (self.first + ' ' + self.last) # make the full name of the instructor
+        print(full_name)
+        print(type(reg_stu_id))
+        for id in self.reg_id: #search for student id in reg course id array
+            id = int(id)
+            print(id)
+            # print(type(id))
 
-            cursor.execute("""SELECT * FROM COURSE WHERE INSTRUCTOR = ?;""", [(first_name + ' ' + second_name)] )
-            print_results = cursor.fetchall()
+        cursor.execute("""SELECT * FROM STUDENT WHERE ID = ?;""", [id] ) #query for student info using id from array
+        stu_id_results = list(cursor.fetchall())
+        for id in stu_id_results:
+            print(id[1])
+            print("Student " + id[1] + " " + id[2] + " has registered for Course " + str(reg_class))
+        for i in self.reg_class:
+            instr_name = self.reg_class
+            print(instr_name)
+            if (self.first + ' ' + self.last) in instr_name:
+                print()
+            else:
+                print("No Students Registered")
+            
+            
+            
+            # cursor.execute("""SELECT * FROM COURSE WHERE INSTRUCTOR = ?;""", [(self.first + ' ' + self.last)] )
+            # print_results = cursor.fetchall()
+            # print("Instructor Course Roster:")
+            # print("------------------------------")
+            # for course in print_results:
+            #     if full_name in str(course[3]):
+            #         print(course)
+            # else:
+            #     print("No Students Registered")
+                
+            #     # print("Student " + "has registered for " + i[1] + " " + i[2]) # + " has registered for Course " + course_name)
 
-            print("Instructor Course Schedule:")
-            print("------------------------------")
-            for i in print_results:
-                print(i)
+        
+        # print("Instructor Course Schedule:")
+        # print("------------------------------")
+        # for i in print_results:
+        #     print(i)
 
+    
+# #new curse roster
+#     def print_classlist(self):
+#         print("\n|COURSE ROSTER|")
+#         print("---------------")
+        
+#         full_name = (self.first + ' ' + self.last) # make the full name of the instructor
+#         print(full_name)
+#         print(self.reg_id)
+#         for id in self.reg_id: #search for student id in reg course id array
+#             id = int(id)
+#             print(id)
+#             # print(type(id))
 
+#         # cursor.execute("""SELECT * FROM STUDENT WHERE ID = ?;""", [id] ) #query for student info using id from array
+#         # stu_id_results = list(cursor.fetchall())
+#         # for id in stu_id_results:
+#         #     print(id[1])
+#         #     print("Student " + id[1] + " " + id[2] + " has registered for Course " + str(self.reg_class))
+#         # for i in self.reg_class:
+#         #     instr_name = self.reg_class
+#         #     print(instr_name)
+#         #     if (self.first + ' ' + self.last) in instr_name:
+#         #         print()
+#         #     else:
+#         #         print("No Students Registered")
+            
+            
+            
+#             # cursor.execute("""SELECT * FROM COURSE WHERE INSTRUCTOR = ?;""", [(self.first + ' ' + self.last)] )
+#             # print_results = cursor.fetchall()
+#             # print("Instructor Course Roster:")
+#             # print("------------------------------")
+#             # for course in print_results:
+#             #     if full_name in str(course[3]):
+#             #         print(course)
+#             # else:
+#             #     print("No Students Registered")
+                
+#             #     # print("Student " + "has registered for " + i[1] + " " + i[2]) # + " has registered for Course " + course_name)
 
-# instr = INSTRUCTOR("Henry", "Bess", "3")
+        
+#         # print("Instructor Course Schedule:")
+#         # print("------------------------------")
+#         # for i in print_results:
+#         #     print(i)
+
+# student = STUDENT("Joe", "Gbe", "10011")
+# instr = INSTRUCTOR("Henry", "Bess", "20013")
+# student.add_course()
+# student.add_course()
+# instr.print_classlist()
 # print("Instrutor first name is: ", instr.first)
 # instr.print_sched()
 
@@ -246,7 +333,7 @@ class ADMIN(USER):
                         print("Course " + crn + " " + title + " has been created")  
                         break 
                     else:
-                        print("ERROR: YEAR MUST BE NUMBERS")
+                        print("ERROR: YEAR AND CREDITS MUST BE NUMBERS")
             else:
                 print("ERROR: CRN MUST BE NUMBERS")
                 continue

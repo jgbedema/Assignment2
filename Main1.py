@@ -136,7 +136,7 @@ def instructor_login():
     choice = ''
     while (choice != "L"):    
             #  ----MENU----
-        print("\n----------------------MENU--------------------------------- \nA to View Schedule\nB to Search Course Roster\nC to List All Courses\nD To Search For a Course\nL to Logout\n")
+        print("\n----------------------MENU--------------------------------- \nA to View Schedule\nB to View Course Roster\nC to List All Courses\nD To Search For a Course\nL to Logout\n")
         
         choice = input("\nPlease select a choice: ")
 
@@ -208,6 +208,7 @@ def admin_login():
 
         if choice == "A":
             adm.List_course() 
+            print("\n")
             adm.add_course()
             print("\n")
             adm.List_course() 
@@ -215,7 +216,7 @@ def admin_login():
 
         elif choice == "B":
             adm.List_course() 
-            adm.remove_course()
+            adm.remov2e_course()
             print("\n")
             adm.List_course()
        
