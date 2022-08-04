@@ -2,7 +2,7 @@ from Classes import *
 
 # database file connection 
 database = sqlite3.connect("Database.db") #connect to the databse provided by Prof
-print ("Opened database successfully")
+#print ("Opened database successfully")
 
 # cursor objects are used to traverse, search, grab, etc. information from the database, similar to indices or pointers  
 cursor = database.cursor() 
@@ -61,20 +61,26 @@ def student_login():
     choice = ''
     while (choice != "L"):    
         #  ----MENU----
-        print("\n----------------------MENU--------------------------------- \nA to Add Courses to Schedule\nB to Remove Courses from Schedule\nC to Print Schedule\nD to View Courses\nL to Logout\n")
+        print("\n----------------------MENU--------------------------------- \nA to Add Courses to Schedule\nB to Remove Courses from Schedule\nC to Print Schedule\nD to View Courses\nE To Search For a Course\nL to Logout\n")
         choice = input("\nPlease select a choice: ")
 
         if choice == "A":
-            stu.add_course()
+            stu.List_course() #display list of courses
+            stu.add_course() 
 
         elif choice == "B":
+            stu.print_sched()
             stu.drop_course()
+            stu.print_sched()
 
         elif choice == "C":
             stu.print_sched()
 
         elif choice == "D":
             stu.List_course()
+
+        elif choice == "E":
+            stu.Search_course_by_input()
 
         elif choice.isnumeric():  
             print("Error: Enter a letter from the MENU")
@@ -130,7 +136,7 @@ def instructor_login():
     choice = ''
     while (choice != "L"):    
             #  ----MENU----
-        print("\n----------------------MENU--------------------------------- \nA to View Schedule\nB to Search Course Roster\nC to List All Courses\nL to Logout\n")
+        print("\n----------------------MENU--------------------------------- \nA to View Schedule\nB to Search Course Roster\nC to List All Courses\nD To Search For a Course\nL to Logout\n")
         
         choice = input("\nPlease select a choice: ")
 
@@ -142,6 +148,9 @@ def instructor_login():
             
         elif choice == "C":
             instr.List_course() #print courses
+        
+        elif choice == "D":
+            instr.Search_course_by_input()
 
         elif choice.isnumeric():  
             print("Error: Enter a letter from the MENU")
@@ -193,15 +202,22 @@ def admin_login():
     choice = ''
     while (choice != "L"):    
             #  ----MENU----
-        print("----------------------MENU--------------------------------- \nA to Add Course to the System\nB to Remove Course From System\nC to Add an Instructor\nD to Add a Student\nE to Remove a User\nF to List All Courses\nL to Logout\n")
+        print("----------------------MENU--------------------------------- \nA to Add Course to the System\nB to Remove Course From System\nC to Add an Instructor\nD to Add a Student\nE to Remove a User\nF to List All Courses\nG To Search For a Course\nL to Logout\n")
         
         choice = input("\nPlease select a choice: ")
 
         if choice == "A":
+            adm.List_course() 
             adm.add_course()
+            print("\n")
+            adm.List_course() 
+
 
         elif choice == "B":
+            adm.List_course() 
             adm.remove_course()
+            print("\n")
+            adm.List_course()
        
         elif choice == "C":
             adm.add_instructor()
@@ -213,7 +229,11 @@ def admin_login():
             adm.remove_user()   
 
         elif choice == "F":
-            adm.List_course() 
+            adm.List_course()
+            print("\n") 
+            
+        elif choice == "G":
+            adm.Search_course_by_input()
 
         elif choice.isnumeric():  
             print("Error: Enter a letter from the MENU")
@@ -240,25 +260,6 @@ while bogus_uname:
 # student_login()
 # instructor_login()
 # admin_login()
-
-
-
-# #grab password and set requirement
-# password = input("Please enter a password: ")
-# if password != default_pw:
-#     print("Incorrect password")
-# else:
-#     print("Successful Login")
-#     print("\n")
-#     #call student function
-#     # student_login()
-#     # instructor_login()
-#     # admin_login()
-
-# user = USER(name, surname, id)
-# admin = ADMIN()
-# instr = INSTRUCTOR(name, surname, id)
-# stu = STUDENT(name, surname, id)
 
 
 # If we skip this, nothing will be saved in the database. 
