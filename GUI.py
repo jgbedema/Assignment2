@@ -1,8 +1,10 @@
 from Classes import *
+from Global_Lists import *
+from guizero import App, Text, TextBox, Slider, PushButton
 
 # database file connection 
 database = sqlite3.connect("Database.db") #connect to the databse provided by Prof
-print ("Opened database successfully")
+#print ("Opened database successfully")
 
 # cursor objects are used to traverse, search, grab, etc. information from the database, similar to indices or pointers  
 cursor = database.cursor() 
@@ -61,20 +63,26 @@ def student_login():
     choice = ''
     while (choice != "L"):    
         #  ----MENU----
-        print("\n----------------------MENU--------------------------------- \nA to Add Courses to Schedule\nB to Remove Courses from Schedule\nC to Print Schedule\nD to View Courses\nL to Logout\n")
+        print("\n----------------------MENU--------------------------------- \nA to Add Courses to Schedule\nB to Remove Courses from Schedule\nC to Print Schedule\nD to View Courses\nE To Search For a Course\nL to Logout\n")
         choice = input("\nPlease select a choice: ")
 
         if choice == "A":
-            stu.add_course()
+            stu.List_course() #display list of courses
+            stu.add_course() 
 
         elif choice == "B":
+            stu.print_sched()
             stu.drop_course()
+            stu.print_sched()
 
         elif choice == "C":
             stu.print_sched()
 
         elif choice == "D":
             stu.List_course()
+
+        elif choice == "E":
+            stu.Search_course_by_input()
 
         elif choice.isnumeric():  
             print("Error: Enter a letter from the MENU")
@@ -130,7 +138,7 @@ def instructor_login():
     choice = ''
     while (choice != "L"):    
             #  ----MENU----
-        print("\n----------------------MENU--------------------------------- \nA to View Schedule\nB to Search Course Roster\nC to List All Courses\nL to Logout\n")
+        print("\n----------------------MENU--------------------------------- \nA to View Schedule\nB to View Course Roster\nC to List All Courses\nD To Search For a Course\nL to Logout\n")
         
         choice = input("\nPlease select a choice: ")
 
@@ -142,6 +150,9 @@ def instructor_login():
             
         elif choice == "C":
             instr.List_course() #print courses
+        
+        elif choice == "D":
+            instr.Search_course_by_input()
 
         elif choice.isnumeric():  
             print("Error: Enter a letter from the MENU")
@@ -193,15 +204,23 @@ def admin_login():
     choice = ''
     while (choice != "L"):    
             #  ----MENU----
-        print("----------------------MENU--------------------------------- \nA to Add Course to the System\nR to Remove Course From System\nI to Add an Instructor\nS to Add a Student\nU to Remove a User\nL to List All Courses\nL to Logout\n")
+        print("----------------------MENU--------------------------------- \nA to Add Course to the System\nB to Remove Course From System\nC to Add an Instructor\nD to Add a Student\nE to Remove a User\nF to List All Courses\nG To Search For a Course\nL to Logout\n")
         
         choice = input("\nPlease select a choice: ")
 
         if choice == "A":
+            adm.List_course() 
+            print("\n")
             adm.add_course()
+            print("\n")
+            adm.List_course() 
+
 
         elif choice == "B":
+            adm.List_course() 
             adm.remove_course()
+            print("\n")
+            adm.List_course()
        
         elif choice == "C":
             adm.add_instructor()
@@ -213,53 +232,70 @@ def admin_login():
             adm.remove_user()   
 
         elif choice == "F":
-            adm.List_course() 
+            adm.List_course()
+            print("\n") 
+            
+        elif choice == "G":
+            adm.Search_course_by_input()
 
         elif choice.isnumeric():  
             print("Error: Enter a letter from the MENU")
 
 
 
-#login/logout
-while bogus_uname:
-    user_type = input("\nEnter 1 for STUDENT LOGIN\nEnter 2 for INSTRUCTOR LOGIN\nEnter 3 for ADMIN LOGIN\nEnter 4 to Exit\n")
-    if user_type == "1":
-        print("\nWelcome Student!")
-        student_login()
-    elif user_type == "2":
-        print("\nWelcome Instructor!")
-        instructor_login()
-    elif user_type == "3":
-        print("\nWelcome Administrator!")
-        admin_login()
-    elif user_type == "4":
-        break
-    else:
-        print("Error: Wrong Entry")
-
 # student_login()
 # instructor_login()
 # admin_login()
 
 
+#####GUI 
 
-# #grab password and set requirement
-# password = input("Please enter a password: ")
-# if password != default_pw:
-#     print("Incorrect password")
-# else:
-#     print("Successful Login")
-#     print("\n")
-#     #call student function
-#     # student_login()
-#     # instructor_login()
-#     # admin_login()
 
-# user = USER(name, surname, id)
-# admin = ADMIN()
-# instr = INSTRUCTOR(name, surname, id)
-# stu = STUDENT(name, surname, id)
+def cb_Login():
+        #store user information to check in db if user exists
+    cursor.execute("""SELECT * FROM STUDENT WHERE EMAIL = ? """, [username.value])
+    student_result = cursor.fetchall()
+
+    cursor.execute("""SELECT * FROM ADMIN WHERE EMAIL = ? """, [username.value])
+    admin_result = cursor.fetchall()
+
+    cursor.execute("""SELECT * FROM INSTRUCTOR WHERE EMAIL = ? """, [username.value])
+    instr_result = cursor.fetchall()
+
+    for i in student_result or admin_result or instr_result:
+        if (len(username.value) == 0) or (password.value == bogus):
+            print('Username does not exist')
+        
+        else:
+            if password != default_pw:
+                print("Incorrect password")
+            else:
+                student_login()
+
+app = App(title = "REGISTRATION SYSTEM", layout = "grid")
+
+welcome = Text(app, text = "WELCOME TO THE COURSE REGISTRATION SYSTEM!", grid = [2,2])
+
+login_email = Text(app, text = "Username: ", size=12, font="Times New Roman", color = "black", grid=[0,0])
+username = TextBox(app, text = " ", width = 25, grid=[1,0])#, command=change_message)
+login_password = Text(app, text = "Password", size=12, font="Times New Roman", color = "black", grid=[0,1])
+password = TextBox(app, text = " ", width = 25, grid=[1,1])#, command=change_message)
+
+Login = PushButton(app, command = cb_Login,  text = "Login")
+
+
+
+
+app.display()
+
+
+
+
 
 
 # If we skip this, nothing will be saved in the database. 
 database.commit() 
+
+
+# close the connection 
+database.close() 
