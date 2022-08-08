@@ -18,17 +18,44 @@ class USER:
         self.first = first
         self.last = last
         self.ID = ID
-        # self.reg_class = [] #list to hold registered courses
-        # self.rep_courses = [] #create an empty list to check repeated courses
-        # self.reg_id = [] #create an empty list to chold student id for registered course
+        # self.reg_class = set() #list to hold registered courses
+        # # rep_courses = [] #create an empty list to check repeated courses
+        # self.reg_stu_id = set()#list to hold student's id's for registered courses
+        # self.reg_prof_name = set() #list to hold prof names for registered courses
+        __reg_class__ = set() #list to hold registered courses
+        # rep_courses = [] #create an empty list to check repeated courses
+        __reg_stu_id__ = set()#list to hold student's id's for registered courses
+        __reg_prof_name__ = set() #list to hold prof names for registered courses
 
+      
+
+
+    # def append_reg_class(self, info): #function to call to populate the arrays
+    #     self.reg_class.add(info) #save class info in list
+    #     # self.reg_class.sort() #sort the list for display later
+    #     self.reg_stu_id.add(self.ID) #grab the user ID
+    #     self.reg_prof_name.add(info[3])
+    #     # self.reg_prof_name.sort()
         
+
+
+    # def remove_reg_class_function(self, info): #functio to call to delete element in arrays
+    #     self.reg_class.remove(info)
+    #     self.reg_prof_name.remove(info[3]) #remove the prof name
+    #     self.reg_stu_id.remove(self.ID)#remove the student's id
+
+
     
-    global reg_class, rep_courses, reg_stu_id, reg_prof_name
-    reg_class = [] #list to hold registered courses
-    # rep_courses = [] #create an empty list to check repeated courses
-    reg_stu_id = [] #list to hold student's id's for registered courses
-    reg_prof_name = [] #list to hold prof names for registered courses
+    # global __reg_class__, __reg_stu_id__, reg_stu_id, __reg_prof_name__
+    __reg_class__ = set() #list to hold registered courses
+        # rep_courses = [] #create an empty list to check repeated courses
+    __reg_stu_id__ = set()#list to hold student's id's for registered courses
+    __reg_prof_name__ = set() #list to hold prof names for registered courses
+    
+    # reg_class = [] #list to hold registered courses
+    # # rep_courses = [] #create an empty list to check repeated courses
+    # reg_stu_id = [] #list to hold student's id's for registered courses
+    # reg_prof_name = [] #list to hold prof names for registered courses
 
     def Search_course_by_input(self):
         print("\n|Search For Course By CRN Or Title|")
@@ -98,7 +125,7 @@ user = USER("Joseph", "Gbedema", "10011")
 class STUDENT(USER):
     def __init__(self, first, last, ID):
         super(STUDENT, self).__init__(first, last, ID) #inherit USER's attributes
-
+        
     #functions
     def add_course(self): 
         print("\n|ADD COURSE|")
@@ -116,17 +143,31 @@ class STUDENT(USER):
                 for i in course_results:
                     print(str(i))
                     # reg_class.append(i) 
-                    if i not in reg_class:
-                        reg_class.append(i) #save class info in list
-                        reg_class.sort() #sort the list for display later
-                        reg_stu_id.append(self.ID) #grab the user ID
-                        reg_prof_name.append(i[3])
-                        reg_prof_name.sort()
+                    if i not in self.__reg_class__:
+                        # self.reg_class.sort() #sort the list for display later
+                        self.__reg_stu_id__.add(self.ID) #grab the user ID
+                        if self.ID != self.__reg_stu_id__:
+                            print(self.ID)
+                            print(self.__reg_stu_id__)
+                            self.__reg_class__.add(i) #save class info in list
+                            self.__reg_prof_name__.add(i[3])
+
+                            # self.reg_class.append(i) #save class info in list
+                            # self.reg_class.sort() #sort the list for display later
+                            # self.reg_stu_id.append(self.ID) #grab the user ID
+                            # self.reg_prof_name.append(i[3])
+                            # self.reg_prof_name.sort()
+                            # self.append_reg_class(i)
+                        else:
+                            self.__reg_class__.clear()
+                            print("Different ID")
                     else:
                         print("You have already registered for this course" )
+                
+               
                 print("\nRegistered Courses: ")
                 print("CRN \t TITLE")
-                for j in reg_class:
+                for j in self.__reg_class__:
                     print(str(j[0]) + "\t " + str(j[1]))
                 break
             break
@@ -139,19 +180,19 @@ class STUDENT(USER):
         cursor.execute("""SELECT * FROM COURSE WHERE CRN = ?;""", [crn] )
         drop_results = cursor.fetchall()
         for i in drop_results:
-            if (len(reg_class) == 0) or (crn == bogus):
+            if (len(self.reg_class) == 0) or (crn == bogus):
                 print("No Such Course Registered\n")
                 
             else:
                 # print(drop_results)
-                if i in reg_class:
+                if i in self.reg_class:
                     # print("Course class ID" + str(reg_stu_id))
-                    print("Course reg info" + str(reg_class))
+                    print("Course reg info" + str(self.reg_class))
                     # print("Course reg prof info" + str(reg_prof_name))
                     print("Course " + str(i[1]) + " " + str(i[2]) + " has been removed")
-                    reg_class.remove(i)
-                    reg_prof_name.remove(i[3]) #remove the prof name
-                    reg_stu_id.remove(self.ID)#remove the student's id
+                    self.reg_class.remove(i)
+                    self.reg_prof_name.remove(i[3]) #remove the prof name
+                    self.reg_stu_id.remove(self.ID)#remove the student's id
                     print()
                 else:
                     print("No Such Course Registered\n")
@@ -163,7 +204,7 @@ class STUDENT(USER):
         print("\n|REGISTERED COURSES|")
         print("--------------------")
         print("CRN \t TITLE")
-        for j in reg_class:
+        for j in self.__reg_class__:
             print(j)
 
 # student = STUDENT("Joe", "Gbe", "10011")
@@ -211,22 +252,22 @@ class INSTRUCTOR(USER):
         
         prof_full_name = (self.first + ' ' + self.last) # make the full name of the instructor
         print(prof_full_name)
-        print("student ID in course registered: " + str(reg_stu_id))
-        print("Course registered info: " + str(reg_class))
-        print("Course reg prof info: " + str(reg_prof_name))
-        print(type(reg_class))
-        for id in reg_stu_id: #search for student id in reg course id array
+        print("student ID in course registered: " + str(self.reg_stu_id))
+        print("Course registered info: " + str(self.reg_class))
+        print("Course reg prof info: " + str(self.reg_prof_name))
+        print(type(self.reg_class))
+        for id in self.reg_stu_id: #search for student id in reg course id array
             id = int(id)
             print(id)
             # print(type(id))
-
+        
         cursor.execute("""SELECT * FROM STUDENT WHERE ID = ?;""", [id] ) #query for student info using id from array
         stu_id_results = list(cursor.fetchall())
         for id in stu_id_results: #search for student id from db query
             stu_fname = id[1]
             stu_lname = id[2]
 
-        for course in reg_class: #search for course in reg course array
+        for course in self.reg_class: #search for course in reg course array
             if prof_full_name in course:
                 # if id in reg_stu_id:
                 print(course)
@@ -412,7 +453,7 @@ class ADMIN(USER):
                 else:
                     print("\nError: Enter an ID")
 
-admin = ADMIN("Joseph", "G", "2")
+# admin = ADMIN("Joseph", "G", "2")
 #print("Admin first name is: ", admin.first)
 # admin.remove_course()
 # admin.add_instructor()

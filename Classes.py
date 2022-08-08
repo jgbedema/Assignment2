@@ -1,28 +1,26 @@
 from Database import *
 from A5 import *
+from datetime import datetime
+
 
 # database file connection 
 database = sqlite3.connect("Database.db") #connect to the databse provided by Prof
 #print ("Opened database successfully")
-
-# cursor objects are used to traverse, search, grab, etc. information from the database, similar to indices or pointers  
 cursor = database.cursor() 
 
-#create a global list for registered classes
-bogus = ' '
+bogus = ' ' #create a global empty string variable 
+
 
 #Base class
 class USER:
     #attributes
-    def __init__(self, first, last, ID):
+    def __init__(self, first, last, ID): #constructor
         self.first = first
         self.last = last
         self.ID = ID
         # self.reg_class = [] #list to hold registered courses
         # self.rep_courses = [] #create an empty list to check repeated courses
         # self.reg_id = [] #create an empty list to chold student id for registered course
-
-        
     
     global reg_class, rep_courses, reg_stu_id, reg_prof_name
     reg_class = [] #list to hold registered courses
@@ -34,8 +32,8 @@ class USER:
         print("\n|Search For Course By CRN Or Title|")
         print("-----------------------------------")
         
-        while bogus:
-            choice = input("\nSelect 1 for CRN or 2 for Title: \n")
+        while bogus: #condition to exit the loop
+            choice = input("\nSelect 1 for CRN or 2 for Title: \n") #grab user input to use for how to set up the query
             if choice == "1":
                 crn = input("Enter Course CRN: ")
                 if crn.isalpha():
@@ -45,7 +43,7 @@ class USER:
                     cursor.execute("""SELECT * FROM COURSE WHERE CRN = ?;""", [crn] )
                     query_result = cursor.fetchall()
                 
-                    for i in query_result:
+                    for i in query_result: #search thru the tuple returned by the query search
                         if i in query_result:
                             print("Course Details: \n" + str(i) + "\n")
                         else:
@@ -67,26 +65,27 @@ class USER:
                         else:
                             print("No Such Course")
                 break
-            elif not "1" or "2" or choice.isnumeric():
+            elif not "1" or "2" or choice.isnumeric(): #set condition not to accpet any other user input
                 print("Error: Enter 1 for CRN or 2 for Title")
             
     
     def List_course(self):
         print("\n|COURSES|")
         print("---------")
-        cursor.execute("""SELECT * FROM COURSE""")
+        cursor.execute("""SELECT * FROM COURSE""") #query for all from COURSE table in db
         course_list = cursor.fetchall()
         # print(course_list)
 
         print("\t\t\t\t\tCOURSE")
-        print("-------------------------------------------------------------------------------------------------")
+        print("-------------------------------------------------------------------------------------------------") #formatting
         for i in course_list:
             print(i)
-        print("-------------------------------------------------------------------------------------------------")
+        print("-------------------------------------------------------------------------------------------------") #formatting
 
+    # def __del__(self, reg_class): #destructor
+    #         print("Destructor Called ")
 
-
-user = USER("Joseph", "Gbedema", "10011")
+# user = USER("Joseph", "Gbedema", "10011")
 #print("User first name is: ", user.first)
 # user.Search_course_by_input()
 # user.List_course()
@@ -106,27 +105,40 @@ class STUDENT(USER):
         crn = input("\nEnter Course CRN: ")
         cursor.execute("""SELECT * FROM COURSE WHERE CRN = ?;""", [crn] )
         course_results = cursor.fetchall()
+        #use query result as foundation for adding a course
         while bogus:
-            if (len(course_results) == 0) or (crn == bogus):
+            if (len(course_results) == 0) or (crn == bogus): #if query result tuple is empty (use length to know if empty)-> course crn not in db
                 print("Error: Course " + crn + " does not exist")
                 # crn = input("\nEnter Course CRN: ")
             
             else:
                 print("\nCourse Information")
-                for i in course_results:
-                    print(str(i))
+                for course in course_results: #iterator titled course to search thru the query result
+                    time = course[4] #save the time of registered courses
+                    # time = datetime.strptime(course[4], '%H%A:%M - ') #convert time to datetime
+                    day = course[5] #save the day of registered courses
+                    # print("Time: " + time)
+                    # print(type(time))
+                    # print("Day: " + day)
+                    print(str(course))
                     # reg_class.append(i) 
-                    if i not in reg_class:
-                        reg_class.append(i) #save class info in list
+                    if course not in reg_class: #if the course in query results not in registered courses list-> populate that list.... condition to check for repeated courses
+                        reg_class.append(course) #save class info in list
                         reg_class.sort() #sort the list for display later
                         reg_stu_id.append(self.ID) #grab the user ID
-                        reg_prof_name.append(i[3])
+                        reg_prof_name.append(course[3])#grab the prof name -> used later to link student and prof to course
                         reg_prof_name.sort()
+                        # for i in reg_class:
+                        #     if i not in reg_class:
+                        #         print("Time Conflict" )
+                        #     else:
+                        #         print(i)
+                       
                     else:
                         print("You have already registered for this course" )
                 print("\nRegistered Courses: ")
                 print("CRN \t TITLE")
-                for j in reg_class:
+                for j in reg_class: #print the registered courses array 
                     print(str(j[0]) + "\t " + str(j[1]))
                 break
             break
@@ -139,7 +151,7 @@ class STUDENT(USER):
         cursor.execute("""SELECT * FROM COURSE WHERE CRN = ?;""", [crn] )
         drop_results = cursor.fetchall()
         for i in drop_results:
-            if (len(reg_class) == 0) or (crn == bogus):
+            if (len(reg_class) == 0) or (crn == bogus): #if registered class list is empty (use length to know if empty)-> course crn not in crn not registered or in db
                 print("No Such Course Registered\n")
                 
             else:
@@ -165,6 +177,8 @@ class STUDENT(USER):
         print("CRN \t TITLE")
         for j in reg_class:
             print(j)
+
+   
 
 # student = STUDENT("Joe", "Gbe", "10011")
 # print("Student first name is: ", student.first)
@@ -194,7 +208,7 @@ class INSTRUCTOR(USER):
     def print_sched(self): 
         print("\n|COURSE TEACHING SCHEDULE|")
         print("--------------------------")
-        prof_name = self.first
+        prof_name = self.first #use constructor to set prof's name for query in db in next line
         prof_last = self.last
             
         cursor.execute("""SELECT * FROM COURSE WHERE INSTRUCTOR = ?;""", [(prof_name + ' ' + prof_last)] )
@@ -210,15 +224,28 @@ class INSTRUCTOR(USER):
         print("---------------")
         
         prof_full_name = (self.first + ' ' + self.last) # make the full name of the instructor
-        print(prof_full_name)
-        print("student ID in course registered: " + str(reg_stu_id))
-        print("Course registered info: " + str(reg_class))
-        print("Course reg prof info: " + str(reg_prof_name))
-        print(type(reg_class))
-        for id in reg_stu_id: #search for student id in reg course id array
-            id = int(id)
-            print(id)
-            # print(type(id))
+                #test cases to see what's in each data structure
+        # print(prof_full_name)
+        # print("student ID in course registered: " + str(reg_stu_id))
+        # print("Course registered info: " + str(reg_class))
+        # print("Course reg prof info: " + str(reg_prof_name))
+        # print(type(reg_class))
+
+
+        global id
+        print("NAME \t\t ID")
+        for id in reg_stu_id: #search for student id in reg course id list
+            if (len(reg_stu_id) == 0) or (id == bogus):
+                id = int(201) #set id to any ambigious number just so the id wont be empty for the query
+                print("No Course Registered\n")
+                
+            else:
+                id = int(id)
+                # print(id)
+                # print(type(id))
+        print(prof_full_name + "\t" + str(id))
+        print("\n")
+
 
         cursor.execute("""SELECT * FROM STUDENT WHERE ID = ?;""", [id] ) #query for student info using id from array
         stu_id_results = list(cursor.fetchall())
@@ -230,12 +257,14 @@ class INSTRUCTOR(USER):
             if prof_full_name in course:
                 # if id in reg_stu_id:
                 print(course)
-                print("Student: " + stu_fname + " " + stu_lname + " is registered for " + str(course[0]) + " " + str(course[1]))
+                print("Student: " + stu_fname + " " + stu_lname + " is registered for Course: " + str(course[0]) + " " + str(course[1]))
                 print("\n")
                     # print("Student: " + str(id) + " has registered for " + str(course[0]) + " " + str(course[1]))
                 # else:
                 #     print("No Student Roster")
+                continue
             # else:
+            #     break
             #     print("No Student Roster")
             #     break
 
@@ -257,11 +286,12 @@ class ADMIN(USER):
         
     #functions
     def add_course(self): 
+        #nested while loop to validate that user input is an proper type for required type for db query
         print("|ADD A COURSE|")
         print("--------------")
         while bogus:
             crn = input("Enter Course CRN: ")
-            if crn.isnumeric():
+            if crn.isnumeric(): #make sure crn is a number
                 title = input("Enter Course Title: ")
                 dept = input("Enter Course Dept: ")
                 instr = input("Enter Instructor First and Last Name: ")
@@ -284,7 +314,7 @@ class ADMIN(USER):
             break
 
 
-
+    #no redundant comments needed
     def remove_course(self):
         print("|REMOVE A COURSE|")
         print("---------")
@@ -305,7 +335,7 @@ class ADMIN(USER):
             break
         
 
-
+    #no redundant comments needed
     def add_instructor(self): 
         print ("|ADD AN INSTRUCTOR|")
         print("--------------")
@@ -389,6 +419,7 @@ class ADMIN(USER):
         if id.isalpha():
                 print("Incorrect ID")
         else:
+            #can only query once at a time so 3 diff queries need to be made
             cursor.execute("""SELECT * FROM ADMIN WHERE ID = ?;""", [id] )
             admin_remove_user = cursor.fetchall()
 
@@ -398,6 +429,7 @@ class ADMIN(USER):
             cursor.execute("""SELECT * FROM STUDENT WHERE ID = ?;""", [id] )
             stud_remove_user = cursor.fetchall()
 
+                    #iterate thru all 3 queries at once
             for i in admin_remove_user or instr_remove_user or stud_remove_user:
                 if i in admin_remove_user or instr_remove_user or stud_remove_user:
                     print("User Information")
@@ -412,7 +444,7 @@ class ADMIN(USER):
                 else:
                     print("\nError: Enter an ID")
 
-admin = ADMIN("Joseph", "G", "2")
+# admin = ADMIN("Joseph", "G", "2")
 #print("Admin first name is: ", admin.first)
 # admin.remove_course()
 # admin.add_instructor()

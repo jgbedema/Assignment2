@@ -1,4 +1,6 @@
 from Classes import *
+from Global_Lists import *
+from guizero import App, Text, TextBox, Slider, PushButton
 
 # database file connection 
 database = sqlite3.connect("Database.db") #connect to the databse provided by Prof
@@ -216,7 +218,7 @@ def admin_login():
 
         elif choice == "B":
             adm.List_course() 
-            adm.remov2e_course()
+            adm.remove_course()
             print("\n")
             adm.List_course()
        
@@ -241,27 +243,59 @@ def admin_login():
 
 
 
-#login/logout
-while bogus_uname:
-    user_type = input("\nEnter 1 for STUDENT LOGIN\nEnter 2 for INSTRUCTOR LOGIN\nEnter 3 for ADMIN LOGIN\nEnter 4 to Exit\n")
-    if user_type == "1":
-        print("\nWelcome Student!")
-        student_login()
-    elif user_type == "2":
-        print("\nWelcome Instructor!")
-        instructor_login()
-    elif user_type == "3":
-        print("\nWelcome Administrator!")
-        admin_login()
-    elif user_type == "4":
-        break
-    else:
-        print("Error: Wrong Entry")
-
 # student_login()
 # instructor_login()
 # admin_login()
 
 
+#####GUI 
+
+
+def cb_Login():
+        #store user information to check in db if user exists
+    cursor.execute("""SELECT * FROM STUDENT WHERE EMAIL = ? """, [username.value])
+    student_result = cursor.fetchall()
+
+    cursor.execute("""SELECT * FROM ADMIN WHERE EMAIL = ? """, [username.value])
+    admin_result = cursor.fetchall()
+
+    cursor.execute("""SELECT * FROM INSTRUCTOR WHERE EMAIL = ? """, [username.value])
+    instr_result = cursor.fetchall()
+
+    for i in student_result or admin_result or instr_result:
+        if (len(username.value) == 0) or (password.value == bogus):
+            print('Username does not exist')
+        
+        else:
+            if password != default_pw:
+                print("Incorrect password")
+            else:
+                student_login()
+
+app = App(title = "REGISTRATION SYSTEM", layout = "grid")
+
+welcome = Text(app, text = "WELCOME TO THE COURSE REGISTRATION SYSTEM!", grid = [2,2])
+
+login_email = Text(app, text = "Username: ", size=12, font="Times New Roman", color = "black", grid=[0,0])
+username = TextBox(app, text = " ", width = 25, grid=[1,0])#, command=change_message)
+login_password = Text(app, text = "Password", size=12, font="Times New Roman", color = "black", grid=[0,1])
+password = TextBox(app, text = " ", width = 25, grid=[1,1])#, command=change_message)
+
+Login = PushButton(app, command = cb_Login,  text = "Login")
+
+
+
+
+app.display()
+
+
+
+
+
+
 # If we skip this, nothing will be saved in the database. 
 database.commit() 
+
+
+# close the connection 
+database.close() 
