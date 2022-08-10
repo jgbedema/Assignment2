@@ -1,5 +1,5 @@
 from Classes import *
-from Global_Lists import *
+from Global_Classes import *
 from guizero import App, Text, TextBox, Slider, PushButton
 
 # database file connection 
