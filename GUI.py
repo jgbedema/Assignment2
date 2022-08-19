@@ -1,5 +1,5 @@
 from Classes import *
-from Global_Lists import *
+from Global_Classes import *
 from guizero import App, Text, TextBox, Slider, PushButton
 
 # database file connection 
@@ -272,14 +272,14 @@ def cb_Login():
             else:
                 student_login()
 
-app = App(title = "REGISTRATION SYSTEM", layout = "grid")
+app = App(title = "REGISTRATION SYSTEM", layout = "auto")
 
 welcome = Text(app, text = "WELCOME TO THE COURSE REGISTRATION SYSTEM!", grid = [2,2])
 
-login_email = Text(app, text = "Username: ", size=12, font="Times New Roman", color = "black", grid=[0,0])
-username = TextBox(app, text = " ", width = 25, grid=[1,0])#, command=change_message)
-login_password = Text(app, text = "Password", size=12, font="Times New Roman", color = "black", grid=[0,1])
-password = TextBox(app, text = " ", width = 25, grid=[1,1])#, command=change_message)
+login_email = Text(app, text = "Username: ", size=12, font="Times New Roman", color = "black")
+username = TextBox(app, text = bogus_uname, width = 25, grid=[1,0])#, command=change_message)
+login_password = Text(app, text = "Password", size=12, font="Times New Roman", color = "black")
+password = TextBox(app, text = bogus_uname, width = 25)#, command=change_message)
 
 Login = PushButton(app, command = cb_Login,  text = "Login")
 

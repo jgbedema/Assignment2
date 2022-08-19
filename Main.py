@@ -1,5 +1,5 @@
 from Classes import *
-# from Global_Lists import *
+# from Global_Classes import *
 
 
 # database file connection 
